@@ -9,19 +9,8 @@ export function isProd() {
 
 export const TYPEORM_CONFIG = 'typeorm';
 
-export function getDefaultTypeormConfig(
-  type: 'cli' | 'nest' = 'nest',
-): DataSourceOptions & TypeOrmModuleOptions {
-  const isCli = type === 'cli';
-
-  const migrations = isCli
-    ? ['src/**/migrations/*.ts']
-    : ['dist/**/migrations/*.js'];
-
-  const entities = isCli
-    ? ['src/**/entities/*.entity.ts']
-    : ['dist/**/entities/*.entity.js'];
-
+export function getDefaultTypeormConfig(): DataSourceOptions &
+  TypeOrmModuleOptions {
   return {
     type: 'postgres',
     url: process.env.TYPEORM_DB_URL,
@@ -32,12 +21,10 @@ export function getDefaultTypeormConfig(
     database: process.env.TYPEORM_DATABASE,
     // synchronize: !isProd(),
     synchronize: true,
-    entities,
-    // entities: ['dist/**/entities/*.entity.js'],
+    entities: ['src/modules/**/entities/*.entity.ts'],
     autoLoadEntities: true,
     subscribers: [],
-    // migrations: ['dist/**/migrations/*.js'],
-    migrations,
+    migrations: ['src/**/migrations/*.ts'],
     migrationsRun: false,
     // depends on config on deployment service
     ssl: process.env.DATABASE_URL ? true : false,
